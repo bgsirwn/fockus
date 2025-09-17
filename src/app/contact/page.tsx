@@ -10,7 +10,7 @@ export default function About() {
       </div>
       <nav>
         <Link href="/">Home</Link> | 
-        <Link href="/contact">Contact Us</Link>
+        <Link href="/about">About Us</Link>
       </nav>
     </div>
   );
