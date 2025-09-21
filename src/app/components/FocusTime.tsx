@@ -1,5 +1,6 @@
 'use client';
 
+import { ForwardIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 
 export default function FocusTime() {
@@ -55,7 +56,9 @@ export default function FocusTime() {
                     >
                         {isRunning ? 'Pause' : 'Start'}
                     </button>
-                    
+                    <button>
+                        <ForwardIcon className={`size-6 ${isRunning ? 'translate-x-0 opacity-100' : 'hidden'}`}/>
+                    </button>
                 </div>
                
             </div>
