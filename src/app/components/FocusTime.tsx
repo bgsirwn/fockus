@@ -1,7 +1,7 @@
 'use client';
 
 import { ForwardIcon } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function FocusTime() {
 
@@ -11,23 +11,49 @@ export default function FocusTime() {
     const [timeLeft, setTimeLeft] = useState(focusTime * 60);
     const [isFocusSession, setIsFocusSession] = useState(true);
 
-    React.useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (isRunning && timeLeft > 0) {
-            timer = setInterval(() => {
-                setTimeLeft((prev) => prev - 1);
-            }, 1000);
-        } else if (timeLeft === 0) {
-            if (isFocusSession) {
-                setIsFocusSession(false);
-                setTimeLeft(breakTime * 60);
-            } else {
-                setIsFocusSession(true);
-                setTimeLeft(focusTime * 60);
-            }
+    // Sync timeLeft ke durasi saat sesi atau durasi berubah, tapi hanya jika tidak berjalan.
+    useEffect(() => {
+        if (!isRunning) {
+        setTimeLeft(isFocusSession ? focusTime * 60 : breakTime * 60);
         }
+    }, [focusTime, breakTime, isFocusSession]);
+
+    // Timer tick. Hanya berjalan jika isRunning true.
+    useEffect(() => {
+        if (!isRunning) return;
+
+        const timer = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+        }, 1000);
+
         return () => clearInterval(timer);
-    }, [isRunning, timeLeft, isFocusSession, focusTime, breakTime]);
+    }, [isRunning]);
+
+    // Reaction saat timeLeft mencapai 0.
+    useEffect(() => {
+        if (timeLeft > 0) return;
+
+        // Pastikan timer dihentikan.
+        setIsRunning(false);
+
+        // Toggle sesi dan set waktu untuk sesi berikutnya.
+        setIsFocusSession(prev => {
+        const next = !prev;
+        setTimeLeft(next ? focusTime * 60 : breakTime * 60);
+        return next;
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [timeLeft]); // intentionally only depend on timeLeft
+
+     // === Tambahkan efek ini untuk update title ===
+    useEffect(() => {
+        const mins = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+        const secs = (timeLeft % 60).toString().padStart(2, "0");
+        const prefix = isFocusSession ? "Focus" : "Break";
+        const status = isRunning ? "" : " (Paused)";
+        document.title = `${prefix} ${mins}:${secs}${status}`;
+    }, [timeLeft, isFocusSession, isRunning]);
+
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -37,6 +63,16 @@ export default function FocusTime() {
 
     const handleStartPause = () => {
         setIsRunning(!isRunning);
+    };
+
+
+    const handleSkip = () => {
+    setIsRunning(false);
+    setIsFocusSession(prev => {
+        const next = !prev;
+        setTimeLeft(next ? focusTime * 60 : breakTime * 60);
+        return next;
+        });
     };
 
    
@@ -56,7 +92,9 @@ export default function FocusTime() {
                     >
                         {isRunning ? 'Pause' : 'Start'}
                     </button>
-                    <button>
+                    <button
+                        onClick={handleSkip}
+                    >
                         <ForwardIcon className={`size-6 ${isRunning ? 'translate-x-0 opacity-100' : 'hidden'}`}/>
                     </button>
                 </div>
