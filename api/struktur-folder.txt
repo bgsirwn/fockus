@@ -1,0 +1,13 @@
+/project
+├─ cmd/
+│  └─ main.go          # entry point
+├─ config/             # load .env atau yaml
+├─ handlers/           # controller HTTP
+├─ middleware/         # jwt, logger, cors
+├─ models/             # struct untuk db & response
+├─ repository/         # query db
+├─ service/            # logic aplikasi
+├─ routes/             # daftar route
+├─ utils/              # helper (hash, validator)
+├─ go.mod
+└─ .env

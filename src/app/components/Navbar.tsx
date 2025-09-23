@@ -50,7 +50,7 @@ export default function Navbar() {
                 Setting
               </Link>
               
-              <Link className="space-x-2 hidden md:flex hover:bg-amber-500 h-10 w-30 items-center justify-center bg-gray-700 border-2 rounded-full gap-2" href="/Login">
+              <Link className="space-x-2 hidden md:flex hover:bg-amber-500 h-10 w-30 items-center justify-center bg-gray-700 border-2 rounded-full gap-2" href="/login">
                 <UserIcon className="size-6"/>
                 Sign In
               </Link>
