@@ -51,7 +51,7 @@ export default function FocusTime() {
         const secs = (timeLeft % 60).toString().padStart(2, "0");
         const prefix = isFocusSession ? "Focus" : "Break";
         const status = isRunning ? "" : " (Paused)";
-        document.title = `${prefix} ${mins}:${secs}${status}`;
+        document.title = `${mins}:${secs}${status} - ${prefix} Time`;
     }, [timeLeft, isFocusSession, isRunning]);
 
 
@@ -78,7 +78,7 @@ export default function FocusTime() {
    
 
     return (
-        <div className="flex flex-col items-center justify-center mt-20">
+        <div className="flex flex-col items-center justify-center mt-10 mb-20">
             <h1 className="text-4xl font-bold mb-8">Focus Time</h1>
             <div className="p-8 rounded-lg shadow-lg w-100 border-2">
                 <div className="text-center mb-8 text-white">

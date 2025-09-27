@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from "react";
-import FocusTime from "./components/FocusTime";
+import FocusTime from "./focus-time/page";
 
 export default function Home() {
 
