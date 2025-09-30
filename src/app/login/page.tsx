@@ -4,10 +4,21 @@
 import React, { JSX, useEffect, useState } from "react";
 import { motion, AnimatePresence, Transition } from "framer-motion";
 import { AtSymbolIcon, LockClosedIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import Alert from "../components/Alert";
+
+
+type FromData={
+  Name : string;
+  Email: string;
+  Password : string;
+  PasswordCheck : string;
+}
 
 export default function AuthPanel(): JSX.Element {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [Modal, setModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -27,6 +38,47 @@ export default function AuthPanel(): JSX.Element {
 
   const leftWidth = isSignUp ? "40%" : "60%";
   const rightWidth = isSignUp ? "60%" : "40%";
+
+
+  const [Data, setData] = useState<FromData>({
+    Name : "",
+    Email: "",
+    Password : "",
+    PasswordCheck : "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
+    const {name, value} = e.target;
+
+    setData((prev)=> {
+      const next = {...prev, [name]: value};
+      return next
+    })
+
+  }
+
+  const registerAccount =() => {
+
+    if (Data.Name === "") {
+      setErrorMsg("Name is Empty!");
+      setModal(true);
+    } else if (Data.Email === "") {
+      setErrorMsg("Email is Empty!");
+      setModal(true);
+    } else if (!Data.Email.includes("@")) {
+      setErrorMsg("Wrong Email Format!");
+      setModal(true);
+    } else if (Data.Password === "") {
+      setErrorMsg("Password is Empty!");
+      setModal(true);
+    } else if (Data.Password !== Data.PasswordCheck) {
+      setErrorMsg("Password Not Same!");
+      setModal(true);
+    } else {
+      console.log("Semua data valid:", Data);
+    }
+    
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -54,7 +106,7 @@ export default function AuthPanel(): JSX.Element {
                     >
                       <div className="py-8">
                         <h2 className="text-3xl font-bold mb-2">Sign In to Account</h2>
-                        <div className="border-2 w-10 inline-block mb-2"></div>
+                        <div className="border-2 w-67 inline-block mb-2"></div>
                         <p className="text-gray-400 my-3">or use your email account</p>
 
                         <div className="flex flex-col items-center">
@@ -163,26 +215,26 @@ export default function AuthPanel(): JSX.Element {
                     >
                       <div className="py-8">
                         <h2 className="text-3xl font-bold mb-2">Sign Up</h2>
-                        <div className="border-2 w-10 border-white inline-block mb-2"></div>
+                        <div className="border-2 w-30 border-white inline-block mb-2"></div>
 
                         <div className="flex flex-col items-center">
                           <div className="bg-white w-64 p-2 flex items-center mb-3 rounded">
                             <UserCircleIcon className="h-5 w-5 text-gray-400 mr-2" />
-                            <input type="text" name="Name" placeholder="Name" className="text-black bg-white outline-none text-sm flex-1" />
+                            <input onChange={handleChange} type="text" name="Name" placeholder="Name" className="text-black bg-white outline-none text-sm flex-1" />
                           </div>
                           <div className="bg-white w-64 p-2 flex items-center mb-3 rounded">
                             <AtSymbolIcon className="h-5 w-5 text-gray-400 mr-2" />
-                            <input type="text" placeholder="Email" className="text-black bg-white outline-none text-sm flex-1" />
+                            <input onChange={handleChange} type="text" name="Email"  placeholder="Email" className="text-black bg-white outline-none text-sm flex-1" />
                           </div>
                           <div className="bg-white w-64 p-2 flex items-center mb-3 rounded">
                             <LockClosedIcon className="h-5 w-5 text-gray-400 mr-2" />
-                            <input type="password" placeholder="Password" className="text-black bg-white outline-none text-sm flex-1" />
+                            <input onChange={handleChange} type="password" name="Password" placeholder="Password" className="text-black bg-white outline-none text-sm flex-1" />
                           </div>
                           <div className="bg-white w-64 p-2 flex items-center mb-3 rounded">
                             <LockClosedIcon className="h-5 w-5 text-gray-400 mr-2" />
-                            <input type="password" placeholder="Type Same Password" className="bg-white text-black outline-none text-sm flex-1" />
+                            <input onChange={handleChange} type="password" name="PasswordCheck" placeholder="Type Same Password" className="bg-white text-black outline-none text-sm flex-1" />
                           </div>
-                          <button className="mt-2 border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-amber-500 text-white">
+                          <button onClick={registerAccount} className="mt-2 border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-amber-500 text-white">
                             Register
                           </button>
                         </div>
@@ -261,6 +313,26 @@ export default function AuthPanel(): JSX.Element {
           </motion.div>
         </div>
       </div>
+
+
+      {/* Modal Alert */}
+      <Alert 
+      open={Modal}
+      title=""
+      msg={errorMsg}
+      onClose={() => setModal(false)} 
+      
+      /> 
+     
+
+
     </div>
+
+    
+
+  
+
   );
 }
+
+
