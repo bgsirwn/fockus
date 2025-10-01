@@ -1,6 +1,7 @@
 package main
 
 import (
+	"api-fockus/routes"
 	"log"
 	"os"
 
@@ -10,9 +11,7 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	routes.SetupRoutes(app)
 
 	port := os.Getenv("PORT")
 	if port == "" {
